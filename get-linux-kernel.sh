@@ -11,10 +11,11 @@ echo "GET KERNAL VERSION --> ${PREEMPT_RT_VERSION}"
 
 echo "Adding apt-repository universe"
 sudo add-apt-repository universe
+sudo apt update
 
 # install linux kernel manager ketchup
 echo "Attempting to install ketchup kernel manager."
-sudo apt-get install ketchup
+sudo apt install ketchup
 cd /usr/src/kernels
 mkdir linux
 cd linux
