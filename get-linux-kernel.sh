@@ -10,12 +10,12 @@ KERNEL_GPG_KEY=${KERNEL_GPG_KEY:-"00411886"}
 echo "GET KERNAL VERSION --> ${PREEMPT_RT_VERSION}"
 
 echo "Adding apt-repository universe"
-sudo add-apt-repository universe
 sudo apt update
 
 # install linux kernel manager ketchup
 echo "Attempting to install ketchup kernel manager."
-sudo apt install ketchup
+sudo apt install ketchup make gcc build-essential libncurses-dev bison flex libssl-dev libelf-dev -y
+mkdir /usr/src/kernels
 cd /usr/src/kernels
 mkdir linux
 cd linux
@@ -26,15 +26,12 @@ gpg --recv-keys ${KERNEL_GPG_KEY}
 # grab the kernel source 
 echo "Grabbing kernel version ${LINUX_KERNEL_VERSION}... (may take a while to grab source files)"
 ketchup -r -G ${PREEMPT_RT_VERSION} > /dev/null 2>&1
-echo "Completed linux kernel source download. Now you can go configure it."
+echo "Completed linux kernel source download."
 
-# NOTE: ketchup command above just automating this process below...
+sudo make defconfig
+sudo make
+sudo make modules_install
+sudo make install
 
-# get and apply the preempt-rt patch
-# wget http://www.kernel.org/pub/linux/kernel/v3.14/linux-3.14.12.tar.bz2 > /dev/null 2>&1 
-# wget https://www.kernel.org/pub/linux/kernel/projects/rt/3.14/patch-3.14.12-rt9.patch.gz > /dev/null 2>&1  
+echo "Make complete"
 
-# tar -jxvf linux-3.14.12.tar.bz2
-# mv linux-3.14.12 linux-3.14.12-rt9
-# cd linux-3.14.12-rt9
-# zcat ../patch-3.14.12-rt9.patch.gz | patch -p1
