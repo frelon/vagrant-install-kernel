@@ -1,37 +1,53 @@
 #!/bin/bash
 
-# locate our most up to date preempt_rt kernel patch, default to 3.14 if not set
-PREEMPT_RT_VERSION=${PREEMPT_RT_VERSION:-"4.20"}
-# the linux kernel must match the patch version.
-LINUX_KERNEL_VERSION=${PREEMPT_RT_VERSION}
-# to ensure our kernel does not contain any malware, we grab the signer's public key 
-KERNEL_GPG_KEY=${KERNEL_GPG_KEY:-"00411886"}
+KERNEL_VERSION=5.0-rc2
+echo "Going to install kernel version ${KERNEL_VERSION}"
 
-echo "GET KERNAL VERSION --> ${PREEMPT_RT_VERSION}"
+if [ ! -f /tmp/kernels/linux-${KERNEL_VERSION}.tar.gz ]; then
+    echo "Getting latest version of kernel from kernel.org"
+    wget https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-${KERNEL_VERSION}.tar.gz \
+        -P /tmp/kernels/
+fi
 
-echo "Adding apt-repository universe"
+echo "Updating apt sources"
 sudo apt update
 
-# install linux kernel manager ketchup
-echo "Attempting to install ketchup kernel manager."
-sudo apt install ketchup make gcc build-essential libncurses-dev bison flex libssl-dev libelf-dev -y
-mkdir /usr/src/kernels
+# install linux kernel manager
+echo "Attempting to install build dependencies."
+sudo apt install \
+    make \
+    gcc \
+    build-essential \
+    libncurses5-dev \
+    bison \
+    flex \
+    libssl-dev \
+    libelf-dev \
+    qt4-default \
+    qt4-dev-tools \
+    -y
+
+# unpack kernel
+echo "Unpacking kernel"
 cd /usr/src/kernels
-mkdir linux
-cd linux
+tar xvzf /tmp/kernels/linux-${KERNEL_VERSION}.tar.gz
+cd linux-${KERNEL_VERSION}
 
-# setup our loading key
-gpg --recv-keys ${KERNEL_GPG_KEY}
+echo "Unpacking done, starting build."
 
-# grab the kernel source 
-echo "Grabbing kernel version ${LINUX_KERNEL_VERSION}... (may take a while to grab source files)"
-ketchup -r -G ${PREEMPT_RT_VERSION} > /dev/null 2>&1
-echo "Completed linux kernel source download."
+# sudo make defconfig
+echo "Copying current boot configuration into new kernel"
+cp /boot/config-$(uname -r) .config
 
-sudo make defconfig
-sudo make
-sudo make modules_install
-sudo make install
+echo "Starting make process"
+
+time ( \
+sudo make -j 6; \
+echo "Making modules"; \
+sudo make modules_install; \
+echo "Installing"; \
+sudo make install; \
+)
 
 echo "Make complete"
 
