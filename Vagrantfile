@@ -1,6 +1,3 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
 VAGRANTFILE_API_VERSION = "2"
 BOX_NAME = ENV["BOX_NAME"] || "ubuntu/bionic64"
 BOX_MEMORY = ENV["BOX_MEMORY"] || 4000
@@ -23,5 +20,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.cpus = BOX_CPUS
   end
   
-  config.vm.provision "shell", path: "get-linux-kernel.sh"
+  config.vm.provision "shell", path: "install-linux-kernel.sh"
 end

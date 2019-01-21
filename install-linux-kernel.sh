@@ -51,3 +51,5 @@ sudo make install; \
 
 echo "Make complete"
 
+sudo reboot;
+
