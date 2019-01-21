@@ -9,10 +9,9 @@ Downloads, compiles and installs the latest Linux kernel on the vagrant box
 
 # Run
 
-`
+```powershell
 git clone https://github.com/frelon/vagrant-install-kernel.git
 vagrant up
-# Wait ~1hr
 vagrant ssh
 uname -r
-`
+```
