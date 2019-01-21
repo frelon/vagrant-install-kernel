@@ -5,7 +5,7 @@ Downloads, compiles and installs the latest Linux kernel on the vagrant box
 
 1. VirtualBox
 2. Vagrant
-3. Vagrand disk-size plugin
+3. Vagrant disk-size plugin (`vagrant plugin install vagrant-disksize`)
 
 # Run
 
