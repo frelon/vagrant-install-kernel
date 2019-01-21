@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KERNEL_VERSION=5.0-rc2
+KERNEL_VERSION=5.0-rc3
 echo "Going to install kernel version ${KERNEL_VERSION}"
 
 if [ ! -f /tmp/kernels/linux-${KERNEL_VERSION}.tar.gz ]; then
